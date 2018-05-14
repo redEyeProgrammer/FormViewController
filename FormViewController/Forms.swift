@@ -91,6 +91,57 @@ class FormViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         cell(forRow: indexPath).didSelect?()
     }
-    
-    
 }
+
+
+final class TargetAction {
+    let execute: () -> ()
+    init(_ execute: @escaping () -> ()) {
+        self.execute = execute
+    }
+    @objc func action(_ sender: Any) {
+        execute()
+    }
+}
+
+struct Observer <State> {
+    var strongReferences: [Any]
+    var update: (State) -> ()
+}
+
+struct RenderingContex<State> {
+    let state: State
+    let change:  ((inout State) -> ()) -> ()
+    let pushViewController:  (UIViewController) -> ()
+    let popViewController: () -> ()
+}
+
+class FormDriver<State> {
+    var formViewController: FormViewController!
+    var sections: [Sections] = []
+    var observer: Observer<State>!
+    var state : State {
+        didSet {
+            observer.update(state)
+            formViewController.reloadSectionFooters()
+        }
+    }
+    
+    init(initial state: State, build: (RenderingContex<State>) -> ([Sections], Observer<State>)) {
+        self.state = state
+        let context = RenderingContex(state: state, change: { [unowned self] f in
+            f(&self.state)
+            }, pushViewController: { [unowned self] vc in
+                self.formViewController.navigationController?.pushViewController(vc, animated: true)
+            }, popViewController: {
+                self.formViewController.navigationController?.popViewController(animated: true)
+        })
+        
+        let (sections, observer) = build(context)
+        self.sections = sections
+        self.observer = observer
+        observer.update(state)
+        formViewController = FormViewController(sections: sections, title: "Personal Hotspot Settings")
+    }
+}
+
