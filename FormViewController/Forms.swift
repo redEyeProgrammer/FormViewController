@@ -8,59 +8,56 @@
 
 import UIKit
 
-class Sections {
-    let cells : [FormViewCell]
+class Section {
+    let cells: [FormCell]
     var footerTitle: String?
-    
-    init(cells: [FormViewCell], footerTitle: String?) {
+    init(cells: [FormCell], footerTitle: String?) {
         self.cells = cells
         self.footerTitle = footerTitle
     }
 }
 
-class FormViewCell: UITableViewCell {
+class FormCell: UITableViewCell {
     var shouldHighlight = false
-    var didSelect : (() -> ())?
+    var didSelect: (() -> ())?
 }
 
 class FormViewController: UITableViewController {
-    var sections: [Sections] = []
-    var firstResponder : UIResponder?
+    var sections: [Section] = []
+    var firstResponder: UIResponder?
     
-    
-    func reloadSectionFooters(){
+    func reloadSectionFooters() {
         UIView.setAnimationsEnabled(false)
         tableView.beginUpdates()
-        //Grab a hold of the footer reference
-        //for index in section.indices
-        for (index, _) in sections.enumerated() {
+        for index in sections.indices {
             let footer = tableView.footerView(forSection: index)
             footer?.textLabel?.text = tableView(tableView, titleForFooterInSection: index)
             footer?.setNeedsLayout()
+            
         }
         tableView.endUpdates()
         UIView.setAnimationsEnabled(true)
     }
     
-    init(sections: [Sections], title: String, firstResponder: UIResponder? = nil) {
+    
+    init(sections: [Section], title: String, firstResponder: UIResponder? = nil) {
         self.firstResponder = firstResponder
         self.sections = sections
         super.init(style: .grouped)
-        self.navigationItem.title = title
+        navigationItem.title = title
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.firstResponder?.becomeFirstResponder()
-    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        firstResponder?.becomeFirstResponder()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -71,28 +68,55 @@ class FormViewController: UITableViewController {
         return sections[section].cells.count
     }
     
+    
+    
+    func cell(for indexPath: IndexPath) -> FormCell {
+        return sections[indexPath.section].cells[indexPath.row]
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        //First we need to look at the right section in the section arrays
-        //Then we need to pickout the right cell
-        return cell(forRow: indexPath)
+        return cell(for: indexPath)
+    }
+    
+    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return cell(for: indexPath).shouldHighlight
     }
     
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return sections[section].footerTitle
     }
-    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        return cell(forRow: indexPath).shouldHighlight
-    }
-    func cell(forRow indexPath: IndexPath) -> FormViewCell {
-        return sections[indexPath.section].cells[indexPath.row]
-    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cell(forRow: indexPath).didSelect?()
+        cell(for: indexPath).didSelect?()
     }
+    
 }
 
+class FormDriver<State> {
+    var formViewController: FormViewController!
+    var rendered: RenderedElement<[Section], State>!
+    
+    var state: State {
+        didSet {
+            rendered.update(state)
+            formViewController.reloadSectionFooters()
+        }
+    }
+    
+    init(initial state: State, build: (RenderingContext<State>) -> RenderedElement<[Section], State>) {
+        self.state = state
+        let context = RenderingContext(state: state, change: { [unowned self] f in
+            f(&self.state)
+            }, pushViewController: { [unowned self] vc in
+                self.formViewController.navigationController?.pushViewController(vc, animated: true)
+            }, popViewController: {
+                self.formViewController.navigationController?.popViewController(animated: true)
+        })
+        self.rendered = build(context)
+        rendered.update(state)
+        formViewController = FormViewController(sections: rendered.element, title: "Personal Hotspot Settings")
+    }
+}
 
 final class TargetAction {
     let execute: () -> ()
@@ -104,44 +128,45 @@ final class TargetAction {
     }
 }
 
-struct Observer <State> {
+struct RenderedElement<Element, State> {
+    var element: Element
     var strongReferences: [Any]
     var update: (State) -> ()
 }
 
-struct RenderingContex<State> {
+struct RenderingContext<State> {
     let state: State
-    let change:  ((inout State) -> ()) -> ()
-    let pushViewController:  (UIViewController) -> ()
+    let change: ((inout State) -> ()) -> ()
+    let pushViewController: (UIViewController) -> ()
     let popViewController: () -> ()
 }
 
-class FormDriver<State> {
-    var formViewController: FormViewController!
-    var sections: [Sections] = []
-    var observer: Observer<State>!
-    var state : State {
-        didSet {
-            observer.update(state)
-            formViewController.reloadSectionFooters()
-        }
+func uiSwitch<State>(context: RenderingContext<State>, keyPath: WritableKeyPath<State, Bool>) -> RenderedElement<UIView, State> {
+    let toggle = UISwitch()
+    toggle.translatesAutoresizingMaskIntoConstraints = false
+    let toggleTarget = TargetAction {
+        context.change { $0[keyPath: keyPath] = toggle.isOn }
     }
-    
-    init(initial state: State, build: (RenderingContex<State>) -> ([Sections], Observer<State>)) {
-        self.state = state
-        let context = RenderingContex(state: state, change: { [unowned self] f in
-            f(&self.state)
-            }, pushViewController: { [unowned self] vc in
-                self.formViewController.navigationController?.pushViewController(vc, animated: true)
-            }, popViewController: {
-                self.formViewController.navigationController?.popViewController(animated: true)
-        })
-        
-        let (sections, observer) = build(context)
-        self.sections = sections
-        self.observer = observer
-        observer.update(state)
-        formViewController = FormViewController(sections: sections, title: "Personal Hotspot Settings")
-    }
+    toggle.addTarget(toggleTarget, action: #selector(TargetAction.action(_:)), for: .valueChanged)
+    return RenderedElement(element: toggle, strongReferences: [toggleTarget], update: { state in
+        toggle.isOn = state[keyPath: keyPath]
+    })
 }
 
+func textField<State>(context: RenderingContext<State>, keyPath: WritableKeyPath<State, String>) -> RenderedElement<UIView, State> {
+    let textField = UITextField()
+    textField.translatesAutoresizingMaskIntoConstraints = false
+    let didEnd = TargetAction {
+        context.change { $0[keyPath: keyPath] = textField.text ?? "" }
+    }
+    let didExit = TargetAction {
+        context.change { $0[keyPath: keyPath] = textField.text ?? "" }
+        context.popViewController()
+    }
+    
+    textField.addTarget(didEnd, action: #selector(TargetAction.action(_:)), for: .editingDidEnd)
+    textField.addTarget(didExit, action: #selector(TargetAction.action(_:)), for: .editingDidEndOnExit)
+    return RenderedElement(element: textField, strongReferences: [didEnd, didExit], update: { state in
+        textField.text = state[keyPath: keyPath]
+    })
+}
