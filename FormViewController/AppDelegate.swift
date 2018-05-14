@@ -14,14 +14,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     let navigationController = UINavigationController()
-    
+    let driver = HotSpotDriver()
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         window = UIWindow()
         window?.frame = UIScreen.main.bounds
         window?.rootViewController = navigationController
         navigationController.viewControllers = [
-            ViewController()
+            driver.formViewController
         ]
         window?.makeKeyAndVisible()
         return true

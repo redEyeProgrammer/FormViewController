@@ -8,13 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		08E4794820A5FA5B00A18F74 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4794720A5FA5B00A18F74 /* AppDelegate.swift */; };
-		08E4794A20A5FA5B00A18F74 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4794920A5FA5B00A18F74 /* ViewController.swift */; };
+		08E4794A20A5FA5B00A18F74 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4794920A5FA5B00A18F74 /* FormViewController.swift */; };
 		08E4794D20A5FA5B00A18F74 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08E4794B20A5FA5B00A18F74 /* Main.storyboard */; };
 		08E4795020A5FA5B00A18F74 /* FormViewController.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 08E4794E20A5FA5B00A18F74 /* FormViewController.xcdatamodeld */; };
 		08E4795220A5FA6000A18F74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08E4795120A5FA6000A18F74 /* Assets.xcassets */; };
 		08E4795520A5FA6000A18F74 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08E4795320A5FA6000A18F74 /* LaunchScreen.storyboard */; };
 		08E4796020A5FA6000A18F74 /* FormViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4795F20A5FA6000A18F74 /* FormViewControllerTests.swift */; };
 		08E4796B20A5FA6000A18F74 /* FormViewControllerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4796A20A5FA6000A18F74 /* FormViewControllerUITests.swift */; };
+		08E4797920A9ECC700A18F74 /* Forms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4797820A9ECC700A18F74 /* Forms.swift */; };
+		08E4797A20A9ECC700A18F74 /* Forms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4797820A9ECC700A18F74 /* Forms.swift */; };
+		08E4797B20A9ECC700A18F74 /* Forms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E4797820A9ECC700A18F74 /* Forms.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +40,7 @@
 /* Begin PBXFileReference section */
 		08E4794420A5FA5B00A18F74 /* FormViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FormViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E4794720A5FA5B00A18F74 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		08E4794920A5FA5B00A18F74 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		08E4794920A5FA5B00A18F74 /* FormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
 		08E4794C20A5FA5B00A18F74 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		08E4794F20A5FA5B00A18F74 /* FormViewController.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FormViewController.xcdatamodel; sourceTree = "<group>"; };
 		08E4795120A5FA6000A18F74 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,6 +52,7 @@
 		08E4796620A5FA6000A18F74 /* FormViewControllerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FormViewControllerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E4796A20A5FA6000A18F74 /* FormViewControllerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewControllerUITests.swift; sourceTree = "<group>"; };
 		08E4796C20A5FA6000A18F74 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		08E4797820A9ECC700A18F74 /* Forms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forms.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +104,8 @@
 			isa = PBXGroup;
 			children = (
 				08E4794720A5FA5B00A18F74 /* AppDelegate.swift */,
-				08E4794920A5FA5B00A18F74 /* ViewController.swift */,
+				08E4794920A5FA5B00A18F74 /* FormViewController.swift */,
+				08E4797820A9ECC700A18F74 /* Forms.swift */,
 				08E4794B20A5FA5B00A18F74 /* Main.storyboard */,
 				08E4795120A5FA6000A18F74 /* Assets.xcassets */,
 				08E4795320A5FA6000A18F74 /* LaunchScreen.storyboard */,
@@ -259,7 +264,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08E4794A20A5FA5B00A18F74 /* ViewController.swift in Sources */,
+				08E4794A20A5FA5B00A18F74 /* FormViewController.swift in Sources */,
+				08E4797920A9ECC700A18F74 /* Forms.swift in Sources */,
 				08E4795020A5FA5B00A18F74 /* FormViewController.xcdatamodeld in Sources */,
 				08E4794820A5FA5B00A18F74 /* AppDelegate.swift in Sources */,
 			);
@@ -270,6 +276,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08E4796020A5FA6000A18F74 /* FormViewControllerTests.swift in Sources */,
+				08E4797A20A9ECC700A18F74 /* Forms.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08E4796B20A5FA6000A18F74 /* FormViewControllerUITests.swift in Sources */,
+				08E4797B20A9ECC700A18F74 /* Forms.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
